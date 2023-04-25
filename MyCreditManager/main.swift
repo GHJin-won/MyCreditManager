@@ -7,40 +7,26 @@
 
 import Foundation
 
-var students: [Student] = []
-
-struct Student {
-    var name: String
-    var subject: [String: String] = [: ]
-}
+var studentData = Data()
 
 let scoreDict: [String: Double] = ["A+": 4.5, "A": 4, "B+": 3.5, "B": 3, "C+": 2.5, "C": 2, "D+": 1.5, "D": 1, "F": 0]
 
 func addStudent() {
     print("추가할 학생의 이름을 입력해주세요")
-    let studentName = readLine()!
-    if studentName == "" {
+    let name = readLine()!
+    if name == "" {
         print("입력이 잘못되었습니다. 다시 확인해주세요.")
         return
-    } else {
-        if students.firstIndex(where: { $0.name == studentName }) != nil {
-            print("\(studentName)은 이미 존재하는 학생입니다. 추가하지 않습니다.")
-        } else {
-            students.append(Student(name: studentName))
-            print("\(studentName) 학생을 추가했습니다.")
-        }
     }
+    let message = studentData.addStudent(name: name) ? "\(name) 학생을 추가했습니다." : "\(name)은 이미 존재하는 학생입니다. 추가하지 않습니다."
+    print(message)
 }
 
 func deleteStudent() {
     print("삭제할 학생의 이름을 입력해주세요")
-    let studentName = readLine()!
-    if let idx = students.firstIndex(where: { $0.name == studentName }) {
-        students.remove(at: idx)
-        print("\(studentName) 학생을 삭제하였습니다.")
-    } else {
-        print("\(studentName) 학생을 찾지 못했습니다.")
-    }
+    let name = readLine()!
+    let message = studentData.deleteStudent(name: name) ? "\(name) 학생을 삭제하였습니다." : "\(name) 학생을 찾지 못했습니다."
+    print(message)
 }
 
 func changeScore() {
@@ -52,16 +38,9 @@ func changeScore() {
         print("입력이 잘못되었습니다. 다시 확인해주세요.")
         return
     }
-    if let idx = students.firstIndex(where: { $0.name == command[0] } ) {
-        if students[idx].subject[command[1]] == nil {
-            students[idx].subject[command[1]] = command[2]
-        } else {
-            students[idx].subject[command[1]]! = command[2]
-        }
-        print("\(command[0]) 학생의 \(command[1]) 과목이 \(command[2])로 추가(변경)되었습니다.")
-    } else {
-        print("\(command[0]) 학생을 찾지 못했습니다.")
-    }
+    var (name, subject, score) = (command[0], command[1], command[2])
+    let message = studentData.changeScore(name: name, subject: subject, score: score) ? "\(command[0]) 학생의 \(subject) 과목이 \(score)로 추가(변경)되었습니다." : "\(name) 학생을 찾지 못했습니다."
+    print(message)
 }
 
 func deleteScore() {
@@ -72,12 +51,9 @@ func deleteScore() {
         print("입력이 잘못되었습니다. 다시 확인해주세요.")
         return
     }
-    if let idx = students.firstIndex(where: { $0.name == command[0] } ) {
-        students[idx].subject.removeValue(forKey: command[1])
-        print("\(command[0]) 학생의 \(command[1]) 과목의 성적이 삭제되었습니다.")
-    } else {
-        print("\(command[0]) 학생을 찾지 못했습니다.")
-    }
+    var (name, subject) = (command[0], command[1])
+    let message = studentData.deleteScore(name: name, subject: subject) ? "\(name) 학생의 \(subject) 과목의 성적이 삭제되었습니다." : "\(name) 학생을 찾지 못했습니다."
+    print(message)
 }
 
 func viewAvg() {
