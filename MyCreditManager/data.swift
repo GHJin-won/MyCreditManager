@@ -12,6 +12,18 @@ struct Student {
     var subject: [String: String] = [: ]
 }
 
+enum Grade: String {
+    case aP = "A+"
+    case a = "A"
+    case bP = "B+"
+    case b = "B"
+    case cP = "C+"
+    case c = "C"
+    case dP = "D+"
+    case d = "D"
+    case f = "F"
+}
+
 struct Data {
     var students: [Student] = []
     
@@ -52,6 +64,23 @@ struct Data {
             return true
         } else {
             return false
+        }
+    }
+    
+    mutating func viewAvg(name: String) {
+        if let idx = students.firstIndex(where: { $0.name == name } ) {
+            let subjects = students[idx].subject
+            let avg = subjects.values.map { scoreDict[$0]! }.reduce(0) { $0 + $1 } / Double(subjects.count)
+            let formatter = NumberFormatter()
+            formatter.maximumFractionDigits = 2
+            formatter.minimumFractionDigits = 0
+            formatter.numberStyle = .decimal
+            subjects.keys.map { print("\($0): \(subjects[$0]!)") }
+            if let formatted = formatter.string(for: avg) {
+                print("평점 : \(formatted)") //
+            }
+        } else {
+            print("\(name) 학생을 찾지 못했습니다.")
         }
     }
     

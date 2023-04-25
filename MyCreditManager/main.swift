@@ -37,8 +37,13 @@ func changeScore() {
     if command.count != 3 {
         print("입력이 잘못되었습니다. 다시 확인해주세요.")
         return
+    } else {
+        guard Grade(rawValue: command[2]) != nil else {
+            print("입력이 잘못되었습니다. 다시 확인해주세요.")
+            return
+        }
     }
-    var (name, subject, score) = (command[0], command[1], command[2])
+    let (name, subject, score) = (command[0], command[1], command[2])
     let message = studentData.changeScore(name: name, subject: subject, score: score) ? "\(command[0]) 학생의 \(subject) 과목이 \(score)로 추가(변경)되었습니다." : "\(name) 학생을 찾지 못했습니다."
     print(message)
 }
@@ -51,33 +56,19 @@ func deleteScore() {
         print("입력이 잘못되었습니다. 다시 확인해주세요.")
         return
     }
-    var (name, subject) = (command[0], command[1])
+    let (name, subject) = (command[0], command[1])
     let message = studentData.deleteScore(name: name, subject: subject) ? "\(name) 학생의 \(subject) 과목의 성적이 삭제되었습니다." : "\(name) 학생을 찾지 못했습니다."
     print(message)
 }
 
 func viewAvg() {
     print("평점을 알고싶은 학생의 이름을 입력해주세요")
-    let studentName = readLine()!
-    if studentName == "" {
+    let name = readLine()!
+    if name == "" {
         print("입력이 잘못되었습니다. 다시 확인해주세요.")
         return
     }
-    if let idx = students.firstIndex(where: { $0.name == studentName } ) {
-        let subjects = students[idx].subject
-        let avg = subjects.values.map { scoreDict[$0]! }.reduce(0) { $0 + $1 } / Double(subjects.count)
-        let formatter = NumberFormatter()
-        formatter.maximumFractionDigits = 2
-        formatter.minimumFractionDigits = 0
-        formatter.numberStyle = .decimal
-        subjects.keys.map { print("\($0): \(subjects[$0]!)") }
-        if let formatted = formatter.string(for: avg) {
-            print("평점 : \(formatted)") //
-        }
-
-    } else {
-        print("\(studentName) 학생을 찾지 못했습니다.")
-    }
+    studentData.viewAvg(name: name)
 }
 
 func endLoop() {
